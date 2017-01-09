@@ -36,16 +36,16 @@
 @task('prep')
     echo "prep:start"
 
-    # Create directories and files that may not exists.
+    # Create directories that may not exist.
     [ ! -d {{ $base_dir }} ] && mkdir -p {{ $base_dir }}
     [ ! -d {{ $releases_dir }} ] && mkdir -p {{ $releases_dir }}
-    [ ! -d {{ $storage_dir }} ] && mkdir -p {{ $storage_dir }}
 
     # Clone the repo
     git clone {{ $repo }} -q --depth 1 {{ $staging_dir }}
 
-    # Copy env for new setups
+    # Copy directories for new setups
     [ ! -f {{ $base_dir }}/.env ] && cp -R {{ $staging_dir }}/.env.example {{ $base_dir }}/.env
+    [ ! -d {{ $storage_dir }} ] && cp -R {{ $staging_dir }}/storage {{ $storage_dir }}
 
     echo "prep:end"
 @endtask
@@ -54,6 +54,7 @@
     echo "update-links:start"
 
     # Link storage dir
+    rm -rf {{ $staging_dir }}/storage
     ln -nfs {{ $storage_dir }} {{ $staging_dir }}/storage
 
     # Link env
@@ -103,7 +104,6 @@
 
 @task('link-current')
     echo "link-current:start"
-
 
     ln -nfs {{ $staging_dir }} {{ $current_dir }}
 
