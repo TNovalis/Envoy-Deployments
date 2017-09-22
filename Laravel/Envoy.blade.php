@@ -81,7 +81,6 @@
 
     # Optimise the Laravel application
     php artisan clear-compiled -q --env={{ $env }} > /dev/null
-    php artisan optimize -q --env={{ $env }} --force > /dev/null
 
     # Cache config for faster lookup
     php artisan -q config:cache > /dev/null
